@@ -2,28 +2,33 @@
 
 #include <avr/io.h>
 #include <stdbool.h>
+#include <avr/interrupt.h>
 
+// Send byte to the UART
 static void uart_putchar(char c) {
     while(!(UCSR0A & _BV(UDRE0)));
     UDR0 = c;
 }
 
+// Read a byte from the UART
 char uart_getchar() {
     while(!(UCSR0A & _BV(RXC0)));
     return UDR0;
 }
 
+// Initialize the UART
 void uart_init() {
     UBRR0L = (unsigned char)(UBRR_VAL & 0xff);
     UBRR0H = (unsigned char)(UBRR_VAL >> 0x8);
 
-    /* Enable receiver and transmitter */
-    UCSR0B = _BV(RXEN0) | _BV(TXEN0);
+    /* Enable receiver, transmitter and interrupts */
+    UCSR0B = (1<<RXEN0) | (1<<TXEN0) | (1<<RXCIE0);
 
     /* Set frame format: 8data, 1stop bit */
     UCSR0C = (3 << UCSZ00);
 }
 
+// Write len bytes to the UART
 int uart_write(char *buf, int len) {
     int i = 0;
     while(i < len) {
@@ -33,6 +38,7 @@ int uart_write(char *buf, int len) {
     return i;
 }
 
+// Read len bytes from the UART
 int uart_read(char *buf, int len) {
     int i = 0;
     while(i < len) {
@@ -42,6 +48,18 @@ int uart_read(char *buf, int len) {
     return i;
 }
 
+// Check if there is data available to read
 bool uart_available() {
     return (UCSR0A & _BV(RXC0));
+}
+
+// Setup the interrupt for receiving data
+// TODO: read byte by byte into a software buffer
+ISR(USART_RX_vect)
+{
+    cli();
+    char ReceivedByte;
+    ReceivedByte = UDR0;
+    UDR0 = ReceivedByte;
+    sei();
 }

@@ -29,7 +29,7 @@ int main(void)
     init_processor();
 
     //addTaskWithPriority(&task1, 3);
-    addTaskWithPriority(&task2, 5);
+    //addTaskWithPriority(&task2, 5);
     //addTaskWithPriority(&task3, 1);
 
     while (1) {}
