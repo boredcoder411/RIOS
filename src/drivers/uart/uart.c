@@ -1,13 +1,14 @@
 #include "../../defs.h"
 
 #include <avr/io.h>
+#include <stdbool.h>
 
 static void uart_putchar(char c) {
     while(!(UCSR0A & _BV(UDRE0)));
     UDR0 = c;
 }
 
-static char uart_getchar() {
+char uart_getchar() {
     while(!(UCSR0A & _BV(RXC0)));
     return UDR0;
 }
@@ -39,4 +40,8 @@ int uart_read(char *buf, int len) {
         ++i;
     }
     return i;
+}
+
+bool uart_available() {
+    return (UCSR0A & _BV(RXC0));
 }

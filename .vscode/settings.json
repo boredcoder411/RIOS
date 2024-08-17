@@ -4,6 +4,7 @@
         "io.h": "c",
         "interrupt.h": "c",
         "delay.h": "c",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "uart.h": "c"
     }
 }

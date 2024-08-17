@@ -1,6 +1,6 @@
 #include "tasks.h"
-#include "../../drivers/uart/uart.h"
-#include "../../defs.h"
+#include "../drivers/uart/uart.h"
+#include "../defs.h"
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
