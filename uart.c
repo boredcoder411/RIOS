@@ -1,9 +1,6 @@
 #include <avr/io.h>
 
-#define BAUDRATE 9600UL
-#define F_CPU 16000000UL
-
-#define UBRR_VAL (F_CPU / 16 / BAUDRATE - 1)
+#include "defs.h"
 
 static void uart_putchar(char c) {
     while(!(UCSR0A & _BV(UDRE0)));

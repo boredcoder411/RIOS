@@ -1,12 +1,10 @@
+#include "uart.h"
+#include "defs.h"
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include <string.h>
-
-#include "uart.h"
-
-#define F_CPU 16000000UL
-#define BAUD 9600
 
 typedef struct task
 {
@@ -28,6 +26,7 @@ unsigned long priorityPeriods[5] = {100, 80, 60, 40, 20}; // Periods based on pr
 int TickFct_1(int state);
 int TickFct_2(int state);
 int TickFct_3(int state);
+int printTask(int state);
 
 unsigned char runningTasks[4] = {255}; // Track running tasks, [0] always idleTask
 const unsigned long idleTask = 255;    // 0 highest priority, 255 lowest
@@ -124,17 +123,12 @@ int main(void)
     init_processor();
 
     // Add tasks with different priorities
-    addTaskWithPriority(&TickFct_1, 3); // Medium priority task
-    addTaskWithPriority(&TickFct_2, 5); // Highest priority task
-    addTaskWithPriority(&TickFct_3, 2); // Low priority task
+    //addTaskWithPriority(&TickFct_1, 3); // Medium priority task
+    //addTaskWithPriority(&TickFct_2, 5); // Highest priority task
+    //addTaskWithPriority(&TickFct_3, 2); // Low priority task
+    addTaskWithPriority(&printTask, 1);
 
-    const char *str = "Hello, World!\r\n";
-
-    while (1)
-    {
-        uart_write((char *)str, strlen(str));
-        _delay_us(25000);
-    }
+    while (1) {}
 }
 
 int TickFct_1(int state)
@@ -152,5 +146,12 @@ int TickFct_2(int state)
 int TickFct_3(int state)
 {
     _delay_us(25000);
+    return 0;
+}
+
+int printTask(int state)
+{
+    uart_write("Task\r\n", strlen("Task\r\n"));
+    _delay_ms(1000);
     return 0;
 }

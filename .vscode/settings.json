@@ -2,6 +2,7 @@
     "files.associations": {
         "setbaud.h": "c",
         "io.h": "c",
-        "interrupt.h": "c"
+        "interrupt.h": "c",
+        "delay.h": "c"
     }
 }
