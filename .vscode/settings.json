@@ -3,6 +3,7 @@
         "setbaud.h": "c",
         "io.h": "c",
         "interrupt.h": "c",
-        "delay.h": "c"
+        "delay.h": "c",
+        "stdbool.h": "c"
     }
 }

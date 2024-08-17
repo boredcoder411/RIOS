@@ -1,6 +1,6 @@
-#include <avr/io.h>
+#include "../../defs.h"
 
-#include "defs.h"
+#include <avr/io.h>
 
 static void uart_putchar(char c) {
     while(!(UCSR0A & _BV(UDRE0)));
