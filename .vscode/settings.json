@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "setbaud.h": "c",
+        "io.h": "c",
+        "interrupt.h": "c"
+    }
+}

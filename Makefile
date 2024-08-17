@@ -22,7 +22,7 @@ all: $(HEX)
 # Build target
 $(OBJ): main.c
 	mkdir -p build
-	$(CC) $(CFLAGS) -o $(OBJ) main.c
+	$(CC) $(CFLAGS) -o $(OBJ) main.c uart.c
 
 # Link target
 $(HEX): $(OBJ)

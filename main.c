@@ -1,8 +1,12 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
-
-#define F_CPU 8000000UL
 #include <util/delay.h>
+#include <string.h>
+
+#include "uart.h"
+
+#define F_CPU 16000000UL
+#define BAUD 9600
 
 typedef struct task
 {
@@ -11,15 +15,15 @@ typedef struct task
     unsigned long period;      // Rate at which the task should tick
     unsigned long elapsedTime; // Time since task's previous tick
     int (*TickFct)(int);       // Function to call for task's tick
+    unsigned char priority;    // Priority level (1 to 5)
 } task;
 
 task tasks[3];
 
 const unsigned char tasksNum = 3;
 const unsigned long tasksPeriodGCD = 25;
-const unsigned long period1 = 25;
-const unsigned long period2 = 50;
-const unsigned long period3 = 100;
+
+unsigned long priorityPeriods[5] = {100, 80, 60, 40, 20}; // Periods based on priority
 
 int TickFct_1(int state);
 int TickFct_2(int state);
@@ -61,7 +65,6 @@ ISR(TIMER1_COMPA_vect)
 
 void init_processor()
 {
-
     /*Set up SPI*/
     PORTB = 0xff;
 
@@ -75,40 +78,68 @@ void init_processor()
 
     /*Enable global interrupts*/
     SREG |= 0x80;
+
+    /*Set up UART*/
+    uart_init();
+}
+
+void addTaskWithPriority(int (*TickFct)(int), unsigned char priority)
+{
+    if (priority < 1 || priority > 5)
+    {
+        return; // Invalid priority
+    }
+
+    // Find the next available task slot
+    unsigned char i;
+    for (i = 0; i < tasksNum; i++)
+    {
+        if (tasks[i].TickFct == NULL)
+        {
+            tasks[i].state = -1;
+            tasks[i].period = priorityPeriods[priority - 1]; // Assign period based on priority
+            tasks[i].elapsedTime = tasks[i].period;
+            tasks[i].running = 0;
+            tasks[i].TickFct = TickFct;
+            tasks[i].priority = priority;
+
+            // Insert task based on priority
+            unsigned char j = i;
+            while (j > 0 && tasks[j - 1].priority < tasks[j].priority)
+            {
+                // Swap the tasks
+                task temp = tasks[j - 1];
+                tasks[j - 1] = tasks[j];
+                tasks[j] = temp;
+                j--;
+            }
+
+            break;
+        }
+    }
 }
 
 int main(void)
 {
     init_processor();
 
-    // Priority assigned to lower position tasks in array
-    unsigned char i = 0;
-    tasks[i].state = -1;
-    tasks[i].period = period1;
-    tasks[i].elapsedTime = tasks[i].period;
-    tasks[i].running = 0;
-    tasks[i].TickFct = &TickFct_1;
-    ++i;
-    tasks[i].state = -1;
-    tasks[i].period = period2;
-    tasks[i].elapsedTime = tasks[i].period;
-    tasks[i].running = 0;
-    tasks[i].TickFct = &TickFct_2;
-    ++i;
-    tasks[i].state = -1;
-    tasks[i].period = period3;
-    tasks[i].elapsedTime = tasks[i].period;
-    tasks[i].running = 0;
-    tasks[i].TickFct = &TickFct_3;
+    // Add tasks with different priorities
+    addTaskWithPriority(&TickFct_1, 3); // Medium priority task
+    addTaskWithPriority(&TickFct_2, 5); // Highest priority task
+    addTaskWithPriority(&TickFct_3, 2); // Low priority task
+
+    const char *str = "Hello, World!\r\n";
 
     while (1)
     {
+        uart_write((char *)str, strlen(str));
+        _delay_us(25000);
     }
 }
 
 int TickFct_1(int state)
 {
-    _delay_us(1000);
+    _delay_us(5000);
     return 0;
 }
 
