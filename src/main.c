@@ -12,13 +12,18 @@ int task3(int state);
 
 void init_processor()
 {
+    /*Set up SPI*/
     PORTB = 0xff;
-
-    TCCR1B = (1 << WGM12) | (1 << CS11);
+    
+    /*Set up timer*/
+    TCCR1B = (1<<WGM12)|(1<<CS11); // CTC mode (clear timer on compare). Prescaler=8
+    // AVR output compare register OCR0.
     OCR1A = 25000;
-    TIMSK1 = (1 << OCIE1A);
+    // AVR timer interrupt mask register         
+    TIMSK1 = (1<<OCIE1A); //enables compare match interrupt
     TCNT1 = 0;
-
+        
+    /*Enable global interrupts*/
     SREG |= 0x80;
 
     uart_init();

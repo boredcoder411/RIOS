@@ -54,7 +54,6 @@ bool uart_available() {
 }
 
 // Setup the interrupt for receiving data
-// TODO: read byte by byte into a software buffer
 ISR(USART_RX_vect)
 {
     uart_putchar(UDR0);
