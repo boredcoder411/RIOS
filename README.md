@@ -1,4 +1,5 @@
 # RIOS
+# Now archived because I want to pursue other things
 RIOS is a realtime operating system written by the Univ. of California, Riverside and Irvine.
 This is their port to AVR microcontrollers, I just:
  - fixed a typo 
