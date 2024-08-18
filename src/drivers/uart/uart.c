@@ -57,9 +57,5 @@ bool uart_available() {
 // TODO: read byte by byte into a software buffer
 ISR(USART_RX_vect)
 {
-    cli();
-    char ReceivedByte;
-    ReceivedByte = UDR0;
-    UDR0 = ReceivedByte;
-    sei();
+    uart_putchar(UDR0);
 }
