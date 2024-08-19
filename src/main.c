@@ -33,8 +33,10 @@ int main(void)
 {
     init_processor();
 
+    uart_write("Hello, world!\n\r", 15);
+
     //addTaskWithPriority(&task1, 3);
-    addTaskWithPriority(&task2, 5);
+    //addTaskWithPriority(&task2, 5);
     //addTaskWithPriority(&task3, 1);
 
     while (1) {}
