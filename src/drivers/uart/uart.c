@@ -4,6 +4,9 @@
 #include <stdbool.h>
 #include <avr/interrupt.h>
 
+char rx_buffer[64];
+int rx_buffer_head = 0;
+
 // Send byte to the UART
 static void uart_putchar(char c) {
     while(!(UCSR0A & _BV(UDRE0)));
@@ -53,8 +56,14 @@ bool uart_available() {
     return (UCSR0A & _BV(RXC0));
 }
 
+char* uart_get_buffer() {
+    return rx_buffer;
+}
+
 // Setup the interrupt for receiving data
 ISR(USART_RX_vect)
 {
-    uart_putchar(UDR0);
+    //uart_putchar(UDR0);
+    rx_buffer[rx_buffer_head] = UDR0;
+    rx_buffer_head = (rx_buffer_head + 1) % 64;
 }

@@ -34,7 +34,7 @@ int main(void)
     init_processor();
 
     //addTaskWithPriority(&task1, 3);
-    //addTaskWithPriority(&task2, 5);
+    addTaskWithPriority(&task2, 5);
     //addTaskWithPriority(&task3, 1);
 
     while (1) {}
@@ -50,10 +50,7 @@ int task1(int state)
 int task2(int state)
 {
     uart_write("Task 2\n\r", 8);
-    if (uart_available()) {
-        char received = uart_getchar();
-        uart_write(&received, 1);
-    }
+    uart_write(uart_get_buffer(), 64);
     _delay_ms(500);
     return state;
 }
