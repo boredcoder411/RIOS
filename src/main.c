@@ -49,9 +49,11 @@ int task1(int state)
 
 int task2(int state)
 {
-    uart_write("Task 2\n\r", 8);
-    uart_write(uart_get_buffer(), 64);
-    _delay_ms(500);
+    uart_write(".", 1);
+    if(rx_buffer[0] != 0) {
+        uart_write(uart_get_buffer(), 64);
+    }
+    //_delay_ms(500);
     return state;
 }
 

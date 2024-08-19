@@ -63,7 +63,8 @@ char* uart_get_buffer() {
 // Setup the interrupt for receiving data
 ISR(USART_RX_vect)
 {
-    //uart_putchar(UDR0);
+    cli();
     rx_buffer[rx_buffer_head] = UDR0;
     rx_buffer_head = (rx_buffer_head + 1) % 64;
+    sei();
 }
