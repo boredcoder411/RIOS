@@ -31,7 +31,9 @@ void init_processor()
 
 int main(void)
 {
-    init_processor();
+    // commenting this out, so the timer interrupt is never setup. this proves that there is a but in the scheduler, since without it, it doesn't crash anymore.
+    //init_processor();
+    uart_init();
 
     uart_write("Hello, world!\n\r", 15);
 

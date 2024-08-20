@@ -21,14 +21,24 @@ char uart_getchar() {
 
 // Initialize the UART
 void uart_init() {
-    UBRR0L = (unsigned char)(UBRR_VAL & 0xff);
-    UBRR0H = (unsigned char)(UBRR_VAL >> 0x8);
+    // Operation mode: Asynchronous USART
+    UCSR0C &= ~_BV(UMSEL00) | ~_BV(UMSEL01);
+    
+    // Set baudrate
+    UBRR0H = (uint8_t)((UBRR_VAL - 8) >> 8);
+    UBRR0L = (uint8_t)(UBRR_VAL);
 
-    /* Enable receiver, transmitter and interrupts */
-    UCSR0B = (1<<RXEN0) | (1<<TXEN0) | (1<<RXCIE0);
+    // Set frame format: 8data, 1stop bit
+    UCSR0C |= _BV(UCSZ00) | _BV(UCSZ01) | _BV(USBS0);
+    
+    // Enable transmitter and receiver
+    UCSR0B |= _BV(TXEN0) | _BV(RXEN0);
 
-    /* Set frame format: 8data, 1stop bit */
-    UCSR0C = (3 << UCSZ00);
+    // Enable TX interrupt
+    UCSR0B |= _BV(TXCIE0);
+
+    // Enable RX interrupt
+    UCSR0B |= _BV(RXCIE0);
 }
 
 // Write len bytes to the UART
