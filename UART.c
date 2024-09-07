@@ -97,7 +97,7 @@ uint8_t uart_ring_buffer_empty(const struct UartRingBuffer *ring_buffer) {
 
 ISR(USART_RX_vect) {
     uint8_t data = UDR0;
-    uart_ring_buffer_put(&UART_RING_BUFFER, data);
+    uart_put_char(data);
 }
 
 ISR(USART_TX_vect) {

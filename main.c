@@ -4,16 +4,9 @@
 #include <util/delay.h>
 #include <stdlib.h>
 
-int count = 0;
-
 ISR(TIMER1_COMPA_vect) {
     cli();
-    char buffer[10];
-    itoa(count, buffer, 10);
-    for (int i = 0; buffer[i] != '\0'; i++) {
-        uart_put_char(buffer[i]);
-    }
-    count++;
+    uart_put_char('I');
     sei();
 }
 
@@ -28,13 +21,12 @@ void init_processor() {
     TCNT1 = 0;
 
     uart_init();
-    uart_put_char('H');
 
     sei(); // Enable global interrupts
 }
 
 int main() {
-    //init_processor();
+    init_processor();
     uart_init();
     uart_put_char('H');
     while (1) {}
