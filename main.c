@@ -1,8 +1,18 @@
-#include "UART.h"
+#include "uart.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include <stdlib.h>
+
+typedef struct Task {
+   unsigned char running; // 1 indicates task is running
+   int state;             // Current state of state machine
+   unsigned long period; // Rate at which the task should tick
+   unsigned long elapsedTime; // Time since task's previous tick
+   int (*TickFct)(int); // Function to call for task's tick
+} Task;
+
+Task tasks[3];
 
 ISR(TIMER1_COMPA_vect) {
     cli();

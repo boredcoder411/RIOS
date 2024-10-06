@@ -20,9 +20,9 @@ endif
 all: $(HEX)
 
 # Build target
-$(OBJ): main.c UART.c
+$(OBJ): main.c uart.c
 	mkdir -p build
-	$(CC) $(CFLAGS) -o $(OBJ) main.c UART.c
+	$(CC) $(CFLAGS) -o $(OBJ) main.c uart.c
 
 # Link target
 $(HEX): $(OBJ)
