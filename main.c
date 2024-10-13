@@ -14,9 +14,19 @@ typedef struct Task {
 
 Task tasks[3];
 
+int tick(int state);
+
 ISR(TIMER1_COMPA_vect) {
     cli();
-    uart_put_char('I');
+    for (unsigned char i = 0; i < 3; i++) {
+        if (tasks[i].running) {
+            tasks[i].elapsedTime += 1;
+            if (tasks[i].elapsedTime >= tasks[i].period) {
+                tasks[i].state = tasks[i].TickFct(tasks[i].state);
+                tasks[i].elapsedTime = 0;
+            }
+        }
+    }
     sei();
 }
 
@@ -38,6 +48,17 @@ void init_processor() {
 int main() {
     init_processor();
     uart_init();
-    uart_put_char('H');
+
+    tasks[0].state = 0;
+    tasks[0].period = 25;
+    tasks[0].elapsedTime = 0;
+    tasks[0].running = 1;
+    tasks[0].TickFct = &tick;
+
     while (1) {}
+}
+
+int tick(int state) {
+    uart_put_string("Hello World!\n");
+    return state;
 }
