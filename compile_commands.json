@@ -1,0 +1,13 @@
+[
+  {
+    "directory": "${workspaceFolder}",
+    "command": "avr-gcc -Wall -g -Os -mmcu=atmega328p -o build/main.o main.c uart.c",
+    "file": "main.c"
+  },
+  {
+    "directory": "${workspaceFolder}",
+    "command": "avr-gcc -Wall -g -Os -mmcu=atmega328p -o build/main.o main.c uart.c",
+    "file": "uart.c"
+  }
+]
+
